@@ -1,10 +1,27 @@
 SELECT * FROM all_seasons;
 
-/* Average Height from all seasons */
+-- Average Height from all seasons 
 SELECT AVG(player_height) / 100 AS average_height_meters
 FROM all_seasons;
 
-/* Average Longevity of a Player */
+
+-- Average Height per Decade 
+SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
+       AVG(player_height) / 100 AS avg_height_meters
+FROM all_seasons
+GROUP BY decade
+ORDER BY decade;
+
+
+-- Average Weight per Decade 
+SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
+       AVG(player_weight) AS avg_weight_kilograms
+FROM all_seasons
+GROUP BY decade
+ORDER BY decade;			
+
+
+-- Average Longevity of a Player 
 SELECT AVG(longevity) AS avg_longevity_years
 FROM (
     SELECT 
@@ -16,22 +33,8 @@ FROM (
     GROUP BY player_name
 ) AS player_longevity;
 
-/* Average Height per Decade */
-SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
-       AVG(player_height) / 100 AS avg_height_meters
-FROM all_seasons
-GROUP BY decade
-ORDER BY decade;
 
-/* Average Weight per Decade */
-SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
-       AVG(player_weight) AS avg_weight_kilograms
-FROM all_seasons
-GROUP BY decade
-ORDER BY decade;			
-
-
-/* Frequency of American players to World players */
+-- Frequency of American players to World players
 SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
        SUM(CASE WHEN country = 'USA' THEN 1 ELSE 0 END) AS usa_players,
        SUM(CASE WHEN country <> 'USA' THEN 1 ELSE 0 END) AS world_players,
@@ -44,7 +47,16 @@ GROUP BY decade
 ORDER BY decade;
 
 
-/* Average games played per season in each decade */
+-- Country Frequency 
+SELECT 
+    country, 
+    COUNT(*) AS player_count
+FROM all_seasons
+GROUP BY country
+ORDER BY player_count DESC;
+
+
+-- Average games played per season in each decade 
 SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
        AVG(gp) AS games_played
 FROM all_seasons
@@ -52,14 +64,15 @@ GROUP BY decade
 ORDER BY decade;
 
 
-/* Points inflation */
+-- Points inflation 
 SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
        AVG(pts) AS avg_ppg
 FROM all_seasons
 GROUP BY decade
 ORDER BY decade;
 
-/* Stats inflation */
+
+-- Stats inflation
 SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
        AVG(pts) AS avg_ppg,
        AVG(ast) AS avg_ast,
@@ -69,7 +82,7 @@ GROUP BY decade
 ORDER BY decade;
 
 
-/* True Shooting Percentage Analysis */
+-- True Shooting Percentage Analysis
 SELECT CONCAT(LEFT(season, 3), '0s') AS decade,
        AVG(ts_pct) AS avg_ts_pct
 FROM all_seasons
@@ -77,12 +90,11 @@ GROUP BY decade
 ORDER BY decade;
 
 
-
 SELECT DISTINCT college
 FROM all_seasons
 ORDER BY college;
 
-/* College Schools Frequency */
+-- College Schools Frequency
 SELECT 
     college, 
     COUNT(*) AS player_count
