@@ -98,4 +98,32 @@ WHERE sp.no_of_games = 1
 ORDER BY sp.sport;
 
 
+-- No. of games played in each olympics
+SELECT games, COUNT(DISTINCT sport) AS total_sports
+FROM athlete_events
+GROUP BY games
+ORDER BY games;
+
+
+-- Oldest athlete/s to participate (
+SELECT *
+FROM athlete_events
+WHERE CAST(Age AS UNSIGNED) = (
+	SELECT MAX(CAST(Age AS UNSIGNED)) 
+	FROM athlete_events 
+	WHERE Medal = 'Gold'
+)
+AND Medal = 'Gold';
+
+-- Ratio of men to women athletes
+WITH gender_counts AS (
+    SELECT 
+        SUM(CASE WHEN Sex = 'M' THEN 1 ELSE 0 END) AS male_count,
+        SUM(CASE WHEN Sex = 'F' THEN 1 ELSE 0 END) AS female_count
+    FROM athlete_events
+)
+SELECT 
+    CONCAT('1:', ROUND(male_count * 1.0 / female_count, 2)) AS ratio
+FROM gender_counts;
+
             
